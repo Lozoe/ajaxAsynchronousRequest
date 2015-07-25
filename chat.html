@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ajax异步请求~</title>
+    <script src="http://www.imooc.com/data/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <style type="text/css">
+    body,
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    #container {
+        margin: 10px auto;
+        height: 520px;
+        width: 500px;
+        border: 5px solid #E0D7D7;
+    }
+    
+    #container #contentList {
+        height: 300px;
+        width: 460px;
+        overflow-y: scroll;
+        margin: 5px auto;
+        border: 1px solid #ACA2A2;
+    }
+    
+    #container #sendContent {
+        height: 150px;
+        width: 460px;
+        margin: 20px auto 10px auto;
+        /*border:1px solid black;*/
+    }
+    
+    #container #sendContent #textContent {
+        height: 146px;
+        width: 300px;
+        /*border:2px solid red;*/
+        /*display:inline-block;*/
+        
+        float: left;
+    }
+    
+    #container #sendContent #nameContent {
+        /*border:2px solid red;*/
+        
+        height: 146px;
+        width: 136px;
+        float: left;
+        margin-left: 16px;
+    }
+    
+    #txtContent {
+        height: 146px;
+        width: 300px;
+    }
+    
+    #nickName {
+        height: 30px;
+        margin: 10px auto;
+        width: 130px;
+    }
+    
+    #btn {
+        height: 30px;
+        margin: 20px auto auto 40px;
+        width: 50px;
+    }
+
+    #hint {
+    	display: block;
+    	height: 30px;
+    	width: 130px;
+    	/*border: 2px solid rgb(223, 196, 196);*/
+    	margin:5px auto;
+    	font-size:12px;
+    	color:#988585;
+    	line-height:30px;
+    }
+
+    #flag {
+    	font-size:11px;
+    	/*border:1px solid black;*/
+    	height:15px;
+    	width:460px;
+    	margin:2px auto;
+    	color:#898585;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="contentList"></div>
+        <div id="sendContent">
+            <div id="textContent">
+                <textarea name="sendContent" id="txtContent">请输入留言内容~~~~~~</textarea>
+            </div>
+            <div id="nameContent">
+                <table>
+                    <input type="text" value="请输入您的昵称~" id="nickName">
+                    <input type="button" value="发&nbsp送" id="btn">
+                    <span id="hint"></span>
+                </table>
+            </div>
+        </div>
+        <div id="flag"></div>
+    </div>
+    <script type="text/javascript">
+    $(function() {
+        // 为留言框、昵称添加点击事件，清空预内容
+        $("#txtContent").focus(function() {
+            $(this).val("");
+        });
+        $("#nickName").focus(function() {
+            $(this).val("");
+        });
+        // 添加点击事件-按钮
+        $("#btn").click(function() {
+            var $txtContent = $("#txtContent").val();
+            var $nickName = $("#nickName").val();
+            var $hint=$("#hint");
+            var $flag=$("#flag");
+            var $message = getLocalTime() + ' ' + '<span id="pName">' + $nickName + '</span>' + ' 说： ' + '<span id="pTxt">' + $txtContent + '</span>' + '</br>';
+            var $content = $("#contentList").html() + $message;
+            if ($txtContent && $nickName !== '') {
+            	$.ajax({
+            		url:"",
+            		data:$content,
+            		success:function(data) {
+            			$("#contentList").html($content);
+            			$hint.html("");
+            		}
+            	});
+            }else if($txtContent && $nickName === '') {
+            	$hint.html("昵称不能为空！！！");
+            	$("#nickName").focus();
+            }
+            else if($txtContent==='' && $nickName !== '') {
+            	$hint.html("留言不能为空！！！");
+            	$("#txtContent").focus();
+            }else {
+            	$hint.html("留言或昵称不能为空！");
+            	$("#txtContent").focus();
+            }
+            $flag.ajaxStart(function(){
+            	$(this).html('留言发送中...').show();
+            });
+            $flag.ajaxStop(function(){
+            	$(this).html('留言成功~').show();
+            });
+            setTimeout(function(){
+            	$flag.html("");
+            },1000);
+            setTimeout(function(){
+            	$hint.html("");
+            },2000);
+        });
+    });
+
+    function getLocalTime() {
+        var date = new Date();
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var seconds = date.getSeconds();
+        var localTime = year + '/' + month + '/' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+        return localTime;
+    }
+    </script>
+</body>
+
+</html>
